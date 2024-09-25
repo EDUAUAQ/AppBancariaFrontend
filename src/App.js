@@ -9,7 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
     return (
         <Routes>
-            <Route path="/" element={<AuthForm />} /> {/* Ruta para el AuthForm */}
+            <Route path="/" element={<AuthForm />} />
         </Routes>
     );
 }
