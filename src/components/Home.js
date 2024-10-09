@@ -1,18 +1,24 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 
 
 const HomePage = () => {
     const [accounts, setAccounts] = useState([]); // Para almacenar las cuentas bancarias
     const [error, setError] = useState(null);
     const sessionData = JSON.parse(sessionStorage.getItem("SD"));
+    const navigate = useNavigate();
 
-    const API_URL = `http://localhost:3000/account/${sessionData.userId}`; // Endpoint para obtener las cuentas
 
     useEffect(() => {
-        fetchAccounts();
+        if (sessionData) {
+            fetchAccounts()
+        } else {
+            navigate('/')
+        }
     }, []);
 
     const fetchAccounts = async () => {
+        const API_URL = `http://localhost:3000/account/${sessionData.userId}`; // Endpoint para obtener las cuentas
         try {
             const response = await fetch(API_URL, {
                 method: 'GET',
