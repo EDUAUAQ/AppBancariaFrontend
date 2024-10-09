@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
+
 
 const AuthForm = () => {
     const [isLogin, setIsLogin] = useState(true); // Estado para alternar entre login y registro
+    const navigate = useNavigate();
 
     // Alternar entre el formulario de login y registro
     const toggleForm = () => {
@@ -11,12 +14,12 @@ const AuthForm = () => {
     // Manejo de envío del formulario
     const handleSubmit = async (event) => {
         event.preventDefault();
+
         if (isLogin) {
             const user_mail = event.target.email.value;
             const user_password = event.target.password.value;
             try {
-                console.log(event.target.email.value, event.target.password.value)
-                const response = await fetch('http://localhost:3001/user/login/', {
+                const response = await fetch('http://localhost:3000/user/login/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ user_mail, user_password })
@@ -24,8 +27,8 @@ const AuthForm = () => {
     
                 if (response.ok) {
                     const data = await response.json();
-                    localStorage.setItem("token", data.token);
-                    console.log("Inicio Exitoso")
+                    sessionStorage.setItem("SD", JSON.stringify(data));
+                    navigate("/home");
                 } else {
                     const errorText = await response.text();  
                     console.log(errorText)
@@ -46,7 +49,7 @@ const AuthForm = () => {
                 return;
             }else{
                 try {
-                    const response = await fetch('http://localhost:3001/user/signup', {
+                    const response = await fetch('http://localhost:3000/user/signup', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -61,6 +64,7 @@ const AuthForm = () => {
                     if (response.ok) {
                         const data = await response.json();
                         alert('Usuario registrado correctamente');
+                        toggleForm()
                     } else {
                         const errorText = await response.text();  
                         alert(`Error: ${errorText}`);
