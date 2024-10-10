@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/AppBancariaFrontend/static/css/main.79d19d76.css",
-    "main.js": "/AppBancariaFrontend/static/js/main.0aa2fae3.js",
+    "main.js": "/AppBancariaFrontend/static/js/main.c586163f.js",
     "static/js/453.3f3dd1b0.chunk.js": "/AppBancariaFrontend/static/js/453.3f3dd1b0.chunk.js",
     "index.html": "/AppBancariaFrontend/index.html",
     "main.79d19d76.css.map": "/AppBancariaFrontend/static/css/main.79d19d76.css.map",
-    "main.0aa2fae3.js.map": "/AppBancariaFrontend/static/js/main.0aa2fae3.js.map",
+    "main.c586163f.js.map": "/AppBancariaFrontend/static/js/main.c586163f.js.map",
     "453.3f3dd1b0.chunk.js.map": "/AppBancariaFrontend/static/js/453.3f3dd1b0.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.79d19d76.css",
-    "static/js/main.0aa2fae3.js"
+    "static/js/main.c586163f.js"
   ]
 }
