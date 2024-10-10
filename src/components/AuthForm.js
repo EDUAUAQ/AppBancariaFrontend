@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
-
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const AuthForm = () => {
     const [isLogin, setIsLogin] = useState(true); // Estado para alternar entre login y registro
@@ -19,7 +19,7 @@ const AuthForm = () => {
             const user_mail = event.target.email.value;
             const user_password = event.target.password.value;
             try {
-                const response = await fetch('http://localhost:3000/user/login/', {
+                const response = await fetch(`${apiUrl}/user/login/`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ user_mail, user_password })
@@ -49,7 +49,7 @@ const AuthForm = () => {
                 return;
             }else{
                 try {
-                    const response = await fetch('http://localhost:3000/user/signup', {
+                    const response = await fetch(`${apiUrl}/user/signup`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({

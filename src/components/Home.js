@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const HomePage = () => {
     const [accounts, setAccounts] = useState([]); // Para almacenar las cuentas bancarias
@@ -18,7 +18,7 @@ const HomePage = () => {
     }, []);
 
     const fetchAccounts = async () => {
-        const API_URL = `http://localhost:3000/account/${sessionData.userId}`; // Endpoint para obtener las cuentas
+        const API_URL = `${apiUrl}/account/${sessionData.userId}`; // Endpoint para obtener las cuentas
         try {
             const response = await fetch(API_URL, {
                 method: 'GET',
