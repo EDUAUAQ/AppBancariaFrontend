@@ -115,13 +115,15 @@ const HomePage = () => {
                     </div>
                 )}
 
-                <button className="btn btn-success me-3 mb-2" onClick={() => setIsCreateModalOpen(true)}>
-                    Crear Nueva Cuenta
-                </button>
+                <div className='container'>
+                    <button className="btn btn-success me-3 mb-2" onClick={() => setIsCreateModalOpen(true)}>
+                        Crear Nueva Cuenta
+                    </button>
 
-                <button className="btn btn-primary" onClick={() => setIsTransferModalOpen(true)}>
-                    Realizar Transferencia
-                </button>
+                    <button className="btn btn-primary mb-2" onClick={() => setIsTransferModalOpen(true)}>
+                        Realizar Transferencia
+                    </button>
+                </div>
 
                 <CreateAccountModal 
                     isOpen={isCreateModalOpen} 

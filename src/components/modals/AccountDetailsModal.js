@@ -98,7 +98,7 @@ const AccountDetailsModal = ({ isOpen, onClose, accountId }) => {
                                 <tbody>
                                     {transactions.length === 0 ? (
                                         <tr>
-                                            <td colSpan="4" className="text-center">No hay transacciones disponibles.</td>
+                                            <td colSpan="5" className="text-center">No hay transacciones disponibles.</td>
                                         </tr>
                                     ) : (
                                         transactions.map(transaction => (
