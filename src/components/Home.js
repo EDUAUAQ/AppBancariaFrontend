@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import Navbar from '../global_components/Navbar';
 import CreateAccountModal from './modals/CreateAccountModal';
-import TransferModal from './modals/TransferModal'; // Importar el nuevo modal de transferencias
+import TransferModal from './modals/TransferModal';
+import AccountDetailsModal from './modals/AccountDetailsModal'; // Importar el nuevo modal de detalles
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -10,7 +11,9 @@ const HomePage = () => {
     const [accounts, setAccounts] = useState([]);
     const [error, setError] = useState(null);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-    const [isTransferModalOpen, setIsTransferModalOpen] = useState(false); // Estado para manejar el modal de transferencias
+    const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
+    const [isAccountDetailsModalOpen, setIsAccountDetailsModalOpen] = useState(false); // Estado para el modal de detalles
+    const [selectedAccountId, setSelectedAccountId] = useState(null); // ID de la cuenta seleccionada
     const [successMessage, setSuccessMessage] = useState("");
     const sessionData = JSON.parse(sessionStorage.getItem("SD"));
     const navigate = useNavigate();
@@ -36,7 +39,7 @@ const HomePage = () => {
 
             if (response.ok) {
                 const responseAPI = await response.json();
-                setAccounts(responseAPI.data); 
+                setAccounts(responseAPI.data);
             } else {
                 const errorText = await response.text();
                 setError(errorText);
@@ -47,16 +50,20 @@ const HomePage = () => {
         }
     };
 
+    const handleViewDetails = (accountId) => {
+        setSelectedAccountId(accountId);
+        setIsAccountDetailsModalOpen(true);
+    };
 
-    
     const handleAccountError = (accountError) => {
-        setError(accountError)
-    }
+        setError(accountError);
+    };
 
     const handleTransferSuccess = () => {
         setSuccessMessage("La transferencia se realizó exitosamente.");
+        fetchAccounts();
         setTimeout(() => {
-            setSuccessMessage(""); // Limpiar el mensaje después de 5 segundos
+            setSuccessMessage("");
         }, 5000);
     };
 
@@ -64,7 +71,7 @@ const HomePage = () => {
         setSuccessMessage("La cuenta se creó exitosamente.");
         fetchAccounts();
         setTimeout(() => {
-            setSuccessMessage(""); // Limpiar el mensaje después de 5 segundos
+            setSuccessMessage("");
         }, 5000);
     };
 
@@ -75,7 +82,7 @@ const HomePage = () => {
                 <h2 className="text-center mb-4">Tus Cuentas Bancarias</h2>
 
                 {error && <div className="alert alert-danger text-center">{error}</div>}
-                {successMessage && ( // Alert de éxito centrada
+                {successMessage && (
                     <div className="alert alert-success text-center" style={successAlertStyle}>
                         {successMessage}
                     </div>
@@ -100,7 +107,7 @@ const HomePage = () => {
                                         </p>
                                     </div>
                                     <div className="card-footer text-center bg-light">
-                                        <button className="btn btn-outline-primary btn-sm">Ver detalles</button>
+                                        <button className="btn btn-outline-primary btn-sm" onClick={() => handleViewDetails(account.account_id)}>Ver detalles</button>
                                     </div>
                                 </div>
                             </div>
@@ -108,29 +115,31 @@ const HomePage = () => {
                     </div>
                 )}
 
-                {/* Botón para abrir el modal de crear cuenta */}
-                <button className="btn btn-success me-3" onClick={() => setIsCreateModalOpen(true)}>
+                <button className="btn btn-success me-3 mb-2" onClick={() => setIsCreateModalOpen(true)}>
                     Crear Nueva Cuenta
                 </button>
 
-                {/* Botón para abrir el modal de transferencia */}
                 <button className="btn btn-primary" onClick={() => setIsTransferModalOpen(true)}>
                     Realizar Transferencia
                 </button>
 
-                {/* Modal para crear nueva cuenta */}
                 <CreateAccountModal 
                     isOpen={isCreateModalOpen} 
                     onClose={() => setIsCreateModalOpen(false)} 
-                    handleAccountError= {handleAccountError} 
-                    handleAccountCreateSuccess= {handleAccountCreateSuccess}
+                    handleAccountError={handleAccountError} 
+                    handleAccountCreateSuccess={handleAccountCreateSuccess}
                 />
 
-                {/* Modal para realizar transferencia */}
                 <TransferModal 
                     isOpen={isTransferModalOpen} 
                     onClose={() => setIsTransferModalOpen(false)} 
-                    onTransferSuccess={handleTransferSuccess} // Llama a esta función al completar la transferencia
+                    onTransferSuccess={handleTransferSuccess}
+                />
+
+                <AccountDetailsModal 
+                    isOpen={isAccountDetailsModalOpen} 
+                    onClose={() => setIsAccountDetailsModalOpen(false)} 
+                    accountId={selectedAccountId} // Pasar el ID de la cuenta seleccionada
                 />
             </div>
         </>
@@ -139,12 +148,12 @@ const HomePage = () => {
 
 const successAlertStyle = {
     position: 'fixed',
-    top: '10%', // Ajusta según sea necesario
+    top: '10%',
     left: '50%',
     transform: 'translate(-50%, 0)',
     zIndex: 1050,
-    width: '300px', // Ajustar según sea necesario
-    margin: '0 auto', // Centra el alert
+    width: '300px',
+    margin: '0 auto',
 };
 
 export default HomePage;
