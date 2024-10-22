@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import Navbar from '../global_components/Navbar';
+import CreateAccountModal from './modals/CreateAccountModal';
+import TransferModal from './modals/TransferModal'; // Importar el nuevo modal de transferencias
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const HomePage = () => {
-    const [accounts, setAccounts] = useState([]); // Para almacenar las cuentas bancarias
+    const [accounts, setAccounts] = useState([]);
     const [error, setError] = useState(null);
-    const [newAccountType, setNewAccountType] = useState(""); // Para almacenar el tipo de cuenta
-    const [isModalOpen, setIsModalOpen] = useState(false); // Estado para manejar el modal
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isTransferModalOpen, setIsTransferModalOpen] = useState(false); // Estado para manejar el modal de transferencias
+    const [successMessage, setSuccessMessage] = useState("");
     const sessionData = JSON.parse(sessionStorage.getItem("SD"));
     const navigate = useNavigate();
 
@@ -21,13 +24,13 @@ const HomePage = () => {
     }, []);
 
     const fetchAccounts = async () => {
-        const API_URL = `${apiUrl}/account/${sessionData.userId}`; // Endpoint para obtener las cuentas
+        const API_URL = `${apiUrl}/account/${sessionData.userId}`;
         try {
             const response = await fetch(API_URL, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionData.token}`, // Autenticación con JWT
+                    'Authorization': `Bearer ${sessionData.token}`,
                 }
             });
 
@@ -44,9 +47,8 @@ const HomePage = () => {
         }
     };
 
-    const handleCreateAccount = async (e) => {
-        e.preventDefault();
-        const API_URL = `${apiUrl}/account/create`; // Endpoint para crear cuentas
+    const handleCreateAccount = async (newAccountType) => {
+        const API_URL = `${apiUrl}/account/create`;
         try {
             const response = await fetch(API_URL, {
                 method: 'POST',
@@ -58,10 +60,8 @@ const HomePage = () => {
             });
 
             if (response.ok) {
-                // Recargar cuentas después de crear una nueva
                 fetchAccounts();
-                setNewAccountType(""); // Limpiar el campo
-                setIsModalOpen(false); // Cerrar el modal
+                setIsCreateModalOpen(false);
             } else {
                 const errorText = await response.text();
                 setError(errorText);
@@ -71,6 +71,14 @@ const HomePage = () => {
             setError('Error de conexión al servidor.');
         }
     };
+    
+
+    const handleTransferSuccess = () => {
+        setSuccessMessage("La transferencia se realizó exitosamente.");
+        setTimeout(() => {
+            setSuccessMessage(""); // Limpiar el mensaje después de 5 segundos
+        }, 5000);
+    };
 
     return (
         <>
@@ -79,7 +87,11 @@ const HomePage = () => {
                 <h2 className="text-center mb-4">Tus Cuentas Bancarias</h2>
 
                 {error && <div className="alert alert-danger text-center">{error}</div>}
-
+                {successMessage && ( // Alert de éxito centrada
+                    <div className="alert alert-success text-center" style={successAlertStyle}>
+                        {successMessage}
+                    </div>
+                )}
                 {accounts.length === 0 && !error ? (
                     <div className="text-center">
                         <h3>No tienes cuentas bancarias registradas.</h3>
@@ -109,45 +121,41 @@ const HomePage = () => {
                 )}
 
                 {/* Botón para abrir el modal de crear cuenta */}
-                <button className="btn btn-success" onClick={() => setIsModalOpen(true)}>
+                <button className="btn btn-success me-3" onClick={() => setIsCreateModalOpen(true)}>
                     Crear Nueva Cuenta
                 </button>
 
+                {/* Botón para abrir el modal de transferencia */}
+                <button className="btn btn-primary" onClick={() => setIsTransferModalOpen(true)}>
+                    Realizar Transferencia
+                </button>
+
                 {/* Modal para crear nueva cuenta */}
-                {isModalOpen && (
-                    <div className="modal" style={{ display: 'block', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1040 }}>
-                        <div className="modal-dialog" style={{ margin: 'auto', marginTop: '100px' }}>
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h5 className="modal-title">Crear Nueva Cuenta Bancaria</h5>
-                                    <button type="button" className="btn-close" onClick={() => setIsModalOpen(false)} aria-label="Close"></button>
-                                </div>
-                                <div className="modal-body">
-                                    <form onSubmit={handleCreateAccount}>
-                                        <div className="mb-3">
-                                            <label htmlFor="accountType" className="form-label">Tipo de Cuenta</label>
-                                            <select 
-                                                className="form-select" 
-                                                id="accountType" 
-                                                value={newAccountType} 
-                                                onChange={(e) => setNewAccountType(e.target.value)} 
-                                                required 
-                                            >
-                                                <option value="">Seleccione un tipo de cuenta</option>
-                                                <option value="Crédito">Crédito</option>
-                                                <option value="Débito">Débito</option>
-                                            </select>
-                                        </div>
-                                        <button type="submit" className="btn btn-primary">Crear Cuenta</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                <CreateAccountModal 
+                    isOpen={isCreateModalOpen} 
+                    onClose={() => setIsCreateModalOpen(false)} 
+                    handleCreateAccount={handleCreateAccount} 
+                />
+
+                {/* Modal para realizar transferencia */}
+                <TransferModal 
+                    isOpen={isTransferModalOpen} 
+                    onClose={() => setIsTransferModalOpen(false)} 
+                    onTransferSuccess={handleTransferSuccess} // Llama a esta función al completar la transferencia
+                />
             </div>
         </>
     );
+};
+
+const successAlertStyle = {
+    position: 'fixed',
+    top: '10%', // Ajusta según sea necesario
+    left: '50%',
+    transform: 'translate(-50%, 0)',
+    zIndex: 1050,
+    width: '300px', // Ajustar según sea necesario
+    margin: '0 auto', // Centra el alert
 };
 
 export default HomePage;
