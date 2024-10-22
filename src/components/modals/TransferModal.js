@@ -58,6 +58,9 @@ const TransferModal = ({ isOpen, onClose, onTransferSuccess }) => {
             } else {
                 const errorText = await response.text();
                 setError(errorText);
+                setTimeout(() => {
+                    setError('') // Limpiar el mensaje después de 5 segundos
+                }, 5000);
             }
         } catch (error) {
             console.error('Error al realizar la transferencia:', error);

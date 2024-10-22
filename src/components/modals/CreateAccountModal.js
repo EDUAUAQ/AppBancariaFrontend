@@ -1,7 +1,37 @@
 import React, { useState } from 'react';
 
-const CreateAccountModal = ({ isOpen, onClose, handleCreateAccount }) => {
+const apiUrl = process.env.REACT_APP_API_URL;
+
+const CreateAccountModal = ({ isOpen, onClose, handleAccountError, handleAccountCreateSuccess}) => {
     const [newAccountType, setNewAccountType] = useState("");
+    const [error, setError] = useState(null);
+    const sessionData = JSON.parse(sessionStorage.getItem("SD"));
+
+    const handleCreateAccount = async (newAccountType) => {
+        const API_URL = `${apiUrl}/account/create`;
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionData.token}`,
+                },
+                body: JSON.stringify({ account_type: newAccountType, user_id: sessionData.userId, balance: 0 }),
+            });
+
+            if (response.ok) {
+                handleAccountCreateSuccess()
+                onClose()
+            } else {
+                const errorText = await response.text();
+                handleAccountError(errorText)
+                onClose()
+            }
+        } catch (error) {
+            console.error('Error al crear cuenta:', error);
+            setError('Error de conexión al servidor.');
+        }
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -23,6 +53,7 @@ const CreateAccountModal = ({ isOpen, onClose, handleCreateAccount }) => {
                     </div>
                     <div className="modal-body">
                         <form onSubmit={handleSubmit}>
+                            {error && <div className="alert alert-danger text-center">{error}</div>}
                             <div className="mb-3">
                                 <label htmlFor="accountType" className="form-label">Tipo de Cuenta</label>
                                 <select 

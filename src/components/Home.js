@@ -47,31 +47,11 @@ const HomePage = () => {
         }
     };
 
-    const handleCreateAccount = async (newAccountType) => {
-        const API_URL = `${apiUrl}/account/create`;
-        try {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionData.token}`,
-                },
-                body: JSON.stringify({ account_type: newAccountType, user_id: sessionData.userId, balance: 0 }),
-            });
 
-            if (response.ok) {
-                fetchAccounts();
-                setIsCreateModalOpen(false);
-            } else {
-                const errorText = await response.text();
-                setError(errorText);
-            }
-        } catch (error) {
-            console.error('Error al crear cuenta:', error);
-            setError('Error de conexión al servidor.');
-        }
-    };
     
+    const handleAccountError = (accountError) => {
+        setError(accountError)
+    }
 
     const handleTransferSuccess = () => {
         setSuccessMessage("La transferencia se realizó exitosamente.");
@@ -80,10 +60,18 @@ const HomePage = () => {
         }, 5000);
     };
 
+    const handleAccountCreateSuccess = () => {
+        setSuccessMessage("La cuenta se creó exitosamente.");
+        fetchAccounts();
+        setTimeout(() => {
+            setSuccessMessage(""); // Limpiar el mensaje después de 5 segundos
+        }, 5000);
+    };
+
     return (
         <>
             <Navbar />
-            <div className="container mt-5">
+            <div className="container mt-5 mb-4">
                 <h2 className="text-center mb-4">Tus Cuentas Bancarias</h2>
 
                 {error && <div className="alert alert-danger text-center">{error}</div>}
@@ -134,7 +122,8 @@ const HomePage = () => {
                 <CreateAccountModal 
                     isOpen={isCreateModalOpen} 
                     onClose={() => setIsCreateModalOpen(false)} 
-                    handleCreateAccount={handleCreateAccount} 
+                    handleAccountError= {handleAccountError} 
+                    handleAccountCreateSuccess= {handleAccountCreateSuccess}
                 />
 
                 {/* Modal para realizar transferencia */}
