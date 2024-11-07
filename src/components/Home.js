@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import Navbar from '../global_components/Navbar';
+import Footer from '../global_components/Footer';
 import CreateAccountModal from './modals/CreateAccountModal';
 import TransferModal from './modals/TransferModal';
 import AccountDetailsModal from './modals/AccountDetailsModal'; // Importar el nuevo modal de detalles
@@ -79,7 +80,12 @@ const HomePage = () => {
         <>
             <Navbar />
             <div className="container mt-5 mb-4">
-                <h2 className="text-center mb-4">Tus Cuentas Bancarias</h2>
+                <div className="row mb-4">
+                    <div className="col-12 text-center">
+                        <h2 className="display-4">Bienvenido, {sessionData?.userName}</h2>
+                        <p className="lead text-muted">Consulta y gestiona tus cuentas bancarias de forma rápida y segura</p>
+                    </div>
+                </div>
 
                 {error && <div className="alert alert-danger text-center">{error}</div>}
                 {successMessage && (
@@ -90,18 +96,23 @@ const HomePage = () => {
                 {accounts.length === 0 && !error ? (
                     <div className="text-center">
                         <h3>No tienes cuentas bancarias registradas.</h3>
+                        <p>Haz clic en el botón de abajo para crear tu primera cuenta.</p>
                     </div>
                 ) : (
-                    <div className="row">
+                    <div className="row mb-4">
                         {accounts.map(account => (
                             <div className="col-md-4 mb-4" key={account.account_id}>
-                                <div className="card shadow-lg border-0">
+                                <div className="card shadow-lg border-0 rounded">
                                     <div className="card-header bg-primary text-white text-center">
                                         <h5 className="mb-0">{account.account_type}</h5>
                                     </div>
                                     <div className="card-body">
                                         <p className="card-text">Número de cuenta: <strong>{account.account_id}</strong></p>
-                                        <p className="card-text">Saldo: <strong>${account.balance} MXN</strong></p>
+                                        <p className="card-text">Saldo:  
+                                            <strong style={{ color: account.balance >= 0 ? 'green' : 'red' }}>
+                                                ${account.balance} MXN
+                                            </strong>
+                                        </p>
                                         <p className="card-text">
                                             <small className="text-muted">Última actualización: {new Date(account.updated_at).toLocaleDateString()}</small>
                                         </p>
@@ -115,12 +126,12 @@ const HomePage = () => {
                     </div>
                 )}
 
-                <div className='container'>
-                    <button className="btn btn-success me-3 mb-2" onClick={() => setIsCreateModalOpen(true)}>
+                <div className='d-flex justify-content-center gap-3'>
+                    <button className="btn btn-success btn-lg" onClick={() => setIsCreateModalOpen(true)}>
                         Crear Nueva Cuenta
                     </button>
 
-                    <button className="btn btn-primary mb-2" onClick={() => setIsTransferModalOpen(true)}>
+                    <button className="btn btn-primary btn-lg" onClick={() => setIsTransferModalOpen(true)}>
                         Realizar Transferencia
                     </button>
                 </div>
@@ -144,6 +155,7 @@ const HomePage = () => {
                     accountId={selectedAccountId} // Pasar el ID de la cuenta seleccionada
                 />
             </div>
+            <Footer/>
         </>
     );
 };

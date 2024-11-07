@@ -6,6 +6,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 //Components
 import AuthForm from './components/AuthForm'; 
 import HomePage from './components/Home';
+import WelcomePage from './components/WelcomePage';
 
 
 
@@ -13,7 +14,8 @@ import HomePage from './components/Home';
 function App() {
     return (
         <Routes>
-            <Route path="/" element={<AuthForm />} />
+            <Route path="/" element={<WelcomePage/>} />
+            <Route path='/Auth' element={<AuthForm/>}/>
             <Route path='/home' element={<HomePage/>}/>
         </Routes>
     );
