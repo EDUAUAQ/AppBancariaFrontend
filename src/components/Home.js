@@ -87,7 +87,18 @@ const HomePage = () => {
                             <p className="lead text-muted">Consulta y gestiona tus cuentas bancarias de forma rápida y segura</p>
                         </div>
                     </div>
-    
+
+                    {/* Aquí movemos los botones de Crear Nueva Cuenta y Realizar Transferencia */}
+                    <div className="d-flex justify-content-center gap-3 mb-4">
+                        <button className="btn btn-success btn-lg" onClick={() => setIsCreateModalOpen(true)}>
+                            Crear Nueva Cuenta
+                        </button>
+
+                        <button className="btn btn-primary btn-lg" onClick={() => setIsTransferModalOpen(true)}>
+                            Realizar Transferencia
+                        </button>
+                    </div>
+
                     {error && <div className="alert alert-danger text-center">{error}</div>}
                     {successMessage && (
                         <div className="alert alert-success text-center" style={successAlertStyle}>
@@ -109,8 +120,15 @@ const HomePage = () => {
                                         </div>
                                         <div className="card-body">
                                             <p className="card-text">Número de cuenta: <strong>{account.account_id}</strong></p>
-                                            <p className="card-text">Saldo:  
-                                                <strong style={{ color: account.balance >= 0 ? 'green' : 'red' }}>${account.balance} MXN</strong>
+                                            <p className="card-text">Saldo:   
+                                                <strong style={{ color: account.balance >= 0 ? 'green' : 'red' }}>
+                                                    {new Intl.NumberFormat('es-MX', {
+                                                        style: 'currency',
+                                                        currency: 'MXN',
+                                                        minimumFractionDigits: 2,  // Asegura que siempre haya 2 decimales
+                                                        maximumFractionDigits: 2,  // Limita a 2 decimales
+                                                    }).format(account.balance)}
+                                                </strong>
                                             </p>
                                             <p className="card-text">
                                                 <small className="text-muted">Última actualización: {new Date(account.updated_at).toLocaleDateString()}</small>
@@ -124,37 +142,27 @@ const HomePage = () => {
                             ))}
                         </div>
                     )}
-    
-                    <div className="d-flex justify-content-center gap-3">
-                        <button className="btn btn-success btn-lg" onClick={() => setIsCreateModalOpen(true)}>
-                            Crear Nueva Cuenta
-                        </button>
-    
-                        <button className="btn btn-primary btn-lg" onClick={() => setIsTransferModalOpen(true)}>
-                            Realizar Transferencia
-                        </button>
-                    </div>
-    
+
                     <CreateAccountModal 
                         isOpen={isCreateModalOpen} 
                         onClose={() => setIsCreateModalOpen(false)} 
                         handleAccountError={handleAccountError} 
                         handleAccountCreateSuccess={handleAccountCreateSuccess}
                     />
-    
+
                     <TransferModal 
                         isOpen={isTransferModalOpen} 
                         onClose={() => setIsTransferModalOpen(false)} 
                         onTransferSuccess={handleTransferSuccess}
                     />
-    
+
                     <AccountDetailsModal 
                         isOpen={isAccountDetailsModalOpen} 
                         onClose={() => setIsAccountDetailsModalOpen(false)} 
                         accountId={selectedAccountId} // Pasar el ID de la cuenta seleccionada
                     />
                 </div>
-    
+
                 {/* Aquí está el footer */}
                 <Footer />
             </div>

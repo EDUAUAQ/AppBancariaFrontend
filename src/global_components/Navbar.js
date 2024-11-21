@@ -17,9 +17,18 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-primary text-white shadow-lg">
+        <nav className="navbar navbar-expand-lg navbar-light bg-primary text-white shadow-sm">
             <div className="container-fluid">
-                <NavLink to="/home" className="navbar-brand text-white font-weight-bold">
+                <NavLink
+                    to="/home"
+                    className="navbar-brand text-white"
+                    style={{
+                        fontFamily: 'Arial', // Fuente moderna y limpia
+                        fontWeight: 'bold', // Mantén el texto en negrita pero sin exagerar
+                        fontSize: '2rem', // Tamaño adecuado para resaltar sin ser demasiado grande
+                        letterSpacing: '0.5px' // Ligero espaciado entre letras para claridad
+                    }}
+                >
                     EDUA Bank
                 </NavLink>
                 <button
@@ -35,14 +44,6 @@ const Navbar = () => {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav ms-auto">
-                        {/* <li className="nav-item">
-                            <NavLink
-                                to="/account"
-                                className="btn btn-outline-light text-white px-4 py-2 font-weight-bold rounded-pill me-2"
-                            >
-                                Cuenta
-                            </NavLink>
-                        </li> */}
                         <li className="nav-item">
                             <button
                                 onClick={handleLogout}
