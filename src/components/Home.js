@@ -79,83 +79,85 @@ const HomePage = () => {
     return (
         <>
             <Navbar />
-            <div className="container mt-5 mb-4">
-                <div className="row mb-4">
-                    <div className="col-12 text-center">
-                        <h2 className="display-4">Bienvenido, {sessionData?.userName}</h2>
-                        <p className="lead text-muted">Consulta y gestiona tus cuentas bancarias de forma rápida y segura</p>
-                    </div>
-                </div>
-
-                {error && <div className="alert alert-danger text-center">{error}</div>}
-                {successMessage && (
-                    <div className="alert alert-success text-center" style={successAlertStyle}>
-                        {successMessage}
-                    </div>
-                )}
-                {accounts.length === 0 && !error ? (
-                    <div className="text-center">
-                        <h3>No tienes cuentas bancarias registradas.</h3>
-                        <p>Haz clic en el botón de abajo para crear tu primera cuenta.</p>
-                    </div>
-                ) : (
+            <div className="d-flex flex-column min-vh-100">
+                <div className="container mt-5 mb-4 flex-fill">
                     <div className="row mb-4">
-                        {accounts.map(account => (
-                            <div className="col-md-4 mb-4" key={account.account_id}>
-                                <div className="card shadow-lg border-0 rounded">
-                                    <div className="card-header bg-primary text-white text-center">
-                                        <h5 className="mb-0">{account.account_type}</h5>
-                                    </div>
-                                    <div className="card-body">
-                                        <p className="card-text">Número de cuenta: <strong>{account.account_id}</strong></p>
-                                        <p className="card-text">Saldo:  
-                                            <strong style={{ color: account.balance >= 0 ? 'green' : 'red' }}>
-                                                ${account.balance} MXN
-                                            </strong>
-                                        </p>
-                                        <p className="card-text">
-                                            <small className="text-muted">Última actualización: {new Date(account.updated_at).toLocaleDateString()}</small>
-                                        </p>
-                                    </div>
-                                    <div className="card-footer text-center bg-light">
-                                        <button className="btn btn-outline-primary btn-sm" onClick={() => handleViewDetails(account.account_id)}>Ver detalles</button>
+                        <div className="col-12 text-center">
+                            <h2 className="display-4">Bienvenido, {sessionData?.userName}</h2>
+                            <p className="lead text-muted">Consulta y gestiona tus cuentas bancarias de forma rápida y segura</p>
+                        </div>
+                    </div>
+    
+                    {error && <div className="alert alert-danger text-center">{error}</div>}
+                    {successMessage && (
+                        <div className="alert alert-success text-center" style={successAlertStyle}>
+                            {successMessage}
+                        </div>
+                    )}
+                    {accounts.length === 0 && !error ? (
+                        <div className="text-center">
+                            <h3>No tienes cuentas bancarias registradas.</h3>
+                            <p>Haz clic en el botón de abajo para crear tu primera cuenta.</p>
+                        </div>
+                    ) : (
+                        <div className="row mb-4">
+                            {accounts.map(account => (
+                                <div className="col-md-4 mb-4" key={account.account_id}>
+                                    <div className="card shadow-lg border-0 rounded">
+                                        <div className="card-header bg-primary text-white text-center">
+                                            <h5 className="mb-0">{account.account_type}</h5>
+                                        </div>
+                                        <div className="card-body">
+                                            <p className="card-text">Número de cuenta: <strong>{account.account_id}</strong></p>
+                                            <p className="card-text">Saldo:  
+                                                <strong style={{ color: account.balance >= 0 ? 'green' : 'red' }}>${account.balance} MXN</strong>
+                                            </p>
+                                            <p className="card-text">
+                                                <small className="text-muted">Última actualización: {new Date(account.updated_at).toLocaleDateString()}</small>
+                                            </p>
+                                        </div>
+                                        <div className="card-footer text-center bg-light">
+                                            <button className="btn btn-outline-primary btn-sm" onClick={() => handleViewDetails(account.account_id)}>Ver detalles</button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
+                    )}
+    
+                    <div className="d-flex justify-content-center gap-3">
+                        <button className="btn btn-success btn-lg" onClick={() => setIsCreateModalOpen(true)}>
+                            Crear Nueva Cuenta
+                        </button>
+    
+                        <button className="btn btn-primary btn-lg" onClick={() => setIsTransferModalOpen(true)}>
+                            Realizar Transferencia
+                        </button>
                     </div>
-                )}
-
-                <div className='d-flex justify-content-center gap-3'>
-                    <button className="btn btn-success btn-lg" onClick={() => setIsCreateModalOpen(true)}>
-                        Crear Nueva Cuenta
-                    </button>
-
-                    <button className="btn btn-primary btn-lg" onClick={() => setIsTransferModalOpen(true)}>
-                        Realizar Transferencia
-                    </button>
+    
+                    <CreateAccountModal 
+                        isOpen={isCreateModalOpen} 
+                        onClose={() => setIsCreateModalOpen(false)} 
+                        handleAccountError={handleAccountError} 
+                        handleAccountCreateSuccess={handleAccountCreateSuccess}
+                    />
+    
+                    <TransferModal 
+                        isOpen={isTransferModalOpen} 
+                        onClose={() => setIsTransferModalOpen(false)} 
+                        onTransferSuccess={handleTransferSuccess}
+                    />
+    
+                    <AccountDetailsModal 
+                        isOpen={isAccountDetailsModalOpen} 
+                        onClose={() => setIsAccountDetailsModalOpen(false)} 
+                        accountId={selectedAccountId} // Pasar el ID de la cuenta seleccionada
+                    />
                 </div>
-
-                <CreateAccountModal 
-                    isOpen={isCreateModalOpen} 
-                    onClose={() => setIsCreateModalOpen(false)} 
-                    handleAccountError={handleAccountError} 
-                    handleAccountCreateSuccess={handleAccountCreateSuccess}
-                />
-
-                <TransferModal 
-                    isOpen={isTransferModalOpen} 
-                    onClose={() => setIsTransferModalOpen(false)} 
-                    onTransferSuccess={handleTransferSuccess}
-                />
-
-                <AccountDetailsModal 
-                    isOpen={isAccountDetailsModalOpen} 
-                    onClose={() => setIsAccountDetailsModalOpen(false)} 
-                    accountId={selectedAccountId} // Pasar el ID de la cuenta seleccionada
-                />
+    
+                {/* Aquí está el footer */}
+                <Footer />
             </div>
-            <Footer/>
         </>
     );
 };
