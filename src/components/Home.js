@@ -4,16 +4,23 @@ import Navbar from '../global_components/Navbar';
 import Footer from '../global_components/Footer';
 import CreateAccountModal from './modals/CreateAccountModal';
 import TransferModal from './modals/TransferModal';
-import AccountDetailsModal from './modals/AccountDetailsModal'; // Importar el nuevo modal de detalles
+import AccountDetailsModal from './modals/AccountDetailsModal'; // Importar el modal de detalles
+import WithdrawModal from './modals/WithdrawModal'; // Importar el nuevo modal de retiro
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const HomePage = () => {
+
     const [accounts, setAccounts] = useState([]);
     const [error, setError] = useState(null);
+
+    //Modals
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
-    const [isAccountDetailsModalOpen, setIsAccountDetailsModalOpen] = useState(false); // Estado para el modal de detalles
+    const [isAccountDetailsModalOpen, setIsAccountDetailsModalOpen] = useState(false); 
+    const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false); 
+
+    
     const [selectedAccountId, setSelectedAccountId] = useState(null); // ID de la cuenta seleccionada
     const [successMessage, setSuccessMessage] = useState("");
     const sessionData = JSON.parse(sessionStorage.getItem("SD"));
@@ -56,6 +63,11 @@ const HomePage = () => {
         setIsAccountDetailsModalOpen(true);
     };
 
+    const handleWithdraw = (accountId) => {
+        setSelectedAccountId(accountId);
+        setIsWithdrawModalOpen(true);
+    };
+
     const handleAccountError = (accountError) => {
         setError(accountError);
     };
@@ -70,6 +82,14 @@ const HomePage = () => {
 
     const handleAccountCreateSuccess = () => {
         setSuccessMessage("La cuenta se creó exitosamente.");
+        fetchAccounts();
+        setTimeout(() => {
+            setSuccessMessage("");
+        }, 5000);
+    };
+
+    const handleWithdrawSuccess = () => {
+        setSuccessMessage("El retiro se realizó exitosamente.");
         fetchAccounts();
         setTimeout(() => {
             setSuccessMessage("");
@@ -136,6 +156,7 @@ const HomePage = () => {
                                         </div>
                                         <div className="card-footer text-center bg-light">
                                             <button className="btn btn-outline-primary btn-sm" onClick={() => handleViewDetails(account.account_id)}>Ver detalles</button>
+                                            <button className="btn btn-outline-danger btn-sm ms-1" onClick={() => handleWithdraw(account.account_id)}>Retirar</button>
                                         </div>
                                     </div>
                                 </div>
@@ -160,6 +181,13 @@ const HomePage = () => {
                         isOpen={isAccountDetailsModalOpen} 
                         onClose={() => setIsAccountDetailsModalOpen(false)} 
                         accountId={selectedAccountId} // Pasar el ID de la cuenta seleccionada
+                    />
+
+                    <WithdrawModal 
+                        isOpen={isWithdrawModalOpen} 
+                        onClose={() => setIsWithdrawModalOpen(false)} 
+                        accountId={selectedAccountId}
+                        handleWithdrawSuccess = {handleWithdrawSuccess}
                     />
                 </div>
 
