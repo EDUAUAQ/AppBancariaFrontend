@@ -10,7 +10,7 @@ const WelcomePage = () => {
 
     useEffect(() => {
         // Verificar si el usuario ya ha aceptado las cookies
-        const cookiesAccepted = localStorage.getItem('cookiesAccepted');
+        const cookiesAccepted = sessionStorage.getItem('cookiesAccepted');
         if (!cookiesAccepted) {
         setIsCookiesModalOpen(true); // Abrir el modal si las cookies no han sido aceptadas
         }
@@ -18,7 +18,7 @@ const WelcomePage = () => {
 
     const handleAcceptCookies = () => {
         // Guardar la aceptación de cookies en localStorage
-        localStorage.setItem('cookiesAccepted', 'true');
+        sessionStorage.setItem('cookiesAccepted', 'true');
         setIsCookiesModalOpen(false); // Cerrar el modal
     };
 
