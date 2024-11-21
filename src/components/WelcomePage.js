@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import WelcomeNavbar from '../global_components/WelcomeNavbar';
 import Footer from '../global_components/Footer';
 import CookiesModal from './modals/CookiesModal'; // Importamos el modal
+import DescriptionModal from './modals/DescriptionModal'; // Importamos el nuevo modal
 
 const WelcomePage = () => {
     const [isCookiesModalOpen, setIsCookiesModalOpen] = useState(false);
+    const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -17,17 +19,21 @@ const WelcomePage = () => {
     }, []);
 
     const handleAcceptCookies = () => {
-        // Guardar la aceptación de cookies en localStorage
+        // Guardar la aceptación de cookies en sessionStorage
         sessionStorage.setItem('cookiesAccepted', 'true');
-        setIsCookiesModalOpen(false); // Cerrar el modal
-    };
-
-    const handleAccessClick = () => {
-        navigate('/Auth');
+        setIsCookiesModalOpen(false); // Cerrar el modal de cookies
     };
 
     const handleJoinClick = () => {
         navigate('/Auth');
+    };
+
+    const handleShowDescriptionModal = () => {
+        setIsDescriptionModalOpen(true); // Abrir el modal de descripción
+    };
+
+    const handleCloseDescriptionModal = () => {
+        setIsDescriptionModalOpen(false); // Cerrar el modal de descripción
     };
 
     return (
@@ -46,7 +52,10 @@ const WelcomePage = () => {
                 <p style={{ fontSize: '1.1rem', color: '#777', maxWidth: '900px', margin: '0 auto' }}>
                 Accede a tus cuentas en cualquier momento, realiza transferencias al instante y disfruta de una plataforma totalmente segura y confiable.
                 </p>
-                <button className="btn btn-primary btn-lg mt-4 px-5 py-3 font-weight-bold rounded-pill">
+                <button
+                className="btn btn-primary btn-lg mt-4 px-5 py-3 font-weight-bold rounded-pill"
+                onClick={handleShowDescriptionModal} // Abrir modal al hacer clic
+                >
                 Conoce más
                 </button>
             </div>
@@ -102,6 +111,9 @@ const WelcomePage = () => {
 
         {/* Modal de Cookies */}
         <CookiesModal isOpen={isCookiesModalOpen} onClose={handleAcceptCookies} />
+
+        {/* Modal de Descripción */}
+        <DescriptionModal isOpen={isDescriptionModalOpen} onClose={handleCloseDescriptionModal} />
         </>
     );
 };

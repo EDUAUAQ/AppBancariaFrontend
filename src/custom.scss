@@ -1,0 +1,6 @@
+// custom.scss
+// Sobrescribir el color primario de Bootstrap
+$primary: #003366;
+
+// Importar los archivos de Bootstrap (asegúrate de que la ruta sea correcta)
+@import '~bootstrap/scss/bootstrap';
